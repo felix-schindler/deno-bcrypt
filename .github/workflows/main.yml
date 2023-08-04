@@ -58,7 +58,7 @@ jobs:
 
       - name: Build
         if: matrix.kind == 'test'
-        run: deno task build -- --locked
+        run: cargo build --release --locked
 
       - name: Lint TypeScript
         if: matrix.kind == 'lint' && matrix.os == 'ubuntu-latest'
