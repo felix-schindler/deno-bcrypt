@@ -10,7 +10,8 @@
 	"fmt": {
 		"useTabs": true,
 		"exclude": [
-			"./target/"
+			"./target/",
+			"./bindings.json"
 		]
 	}
 }
