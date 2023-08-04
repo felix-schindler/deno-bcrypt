@@ -1,0 +1,14 @@
+[package]
+name = "deno-bcrypt"
+version = "0.1.0"
+authors = ["Felix <code@schindlerfelix.de>"]
+edition = "2018"
+
+[lib]
+path = "lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+bcrypt = "0.15"
+deno_bindgen = "0.8.1"
+serde = { version = "1", features = ["derive"] }

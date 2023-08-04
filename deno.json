@@ -1,0 +1,16 @@
+{
+	"lock": false,
+	"tasks": {
+		"samples": "deno run -A --unstable ./examples/",
+		"ok": "deno fmt --check && deno lint",
+		"test": "LOCAL=true deno test --allow-ffi --allow-env --allow-write --allow-read --allow-net=github.com --unstable",
+		"bench": "LOCAL=true deno bench --allow-ffi --allow-env --allow-write --allow-read --allow-net=deno.land,github.com --unstable",
+		"build": "deno_bindgen --release"
+	},
+	"fmt": {
+		"useTabs": true,
+		"exclude": [
+			"./target/"
+		]
+	}
+}

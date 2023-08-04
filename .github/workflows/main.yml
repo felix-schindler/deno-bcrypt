@@ -1,0 +1,84 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.kind }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        os: [macOS-latest, windows-2019, ubuntu-latest]
+        kind: ["test", "lint"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install rust with rustfmt and clippy
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          components: rustfmt, clippy
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Log versions
+        run: |
+          deno --version
+          rustc --version
+          cargo --version
+
+      - name: Cache cargo registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo index
+        uses: actions/cache@v3
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache cargo build
+        uses: actions/cache@v3
+        with:
+          path: target
+          key: ${{ matrix.kind }}-${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Clippy
+        if: matrix.kind == 'lint'
+        run: cargo clippy --all-targets --release --locked -- -D clippy::all
+
+      - name: Build
+        if: matrix.kind == 'test'
+        run: deno task build -- --locked
+
+      - name: Lint TypeScript
+        if: matrix.kind == 'lint' && matrix.os == 'ubuntu-latest'
+        run: deno task ok
+
+      - name: Test TypeScript
+        if: matrix.kind == 'test'
+        run: deno task test
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: matrix.kind == 'test' && startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
+        with:
+          files: |
+            target/release/libdeno_bcrypt.dylib
+            target/release/libdeno_bcrypt.so
+            target/release/deno_bcrypt.dll
+
+      - name: After Release Test
+        if: matrix.kind == 'test' && startsWith(github.ref, 'refs/tags/')
+        run: deno test -A --unstable
