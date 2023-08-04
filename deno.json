@@ -5,7 +5,7 @@
 		"ok": "deno fmt --check && deno lint",
 		"test": "LOCAL=true deno test --allow-ffi --allow-env --allow-write --allow-read --allow-net=github.com --unstable",
 		"bench": "LOCAL=true deno bench --allow-ffi --allow-env --allow-write --allow-read --allow-net=deno.land,github.com --unstable",
-		"build": "deno_bindgen --release"
+		"build": "deno run -A https://deno.land/x/deno_bindgen/cli.ts --release"
 	},
 	"fmt": {
 		"useTabs": true,
