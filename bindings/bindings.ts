@@ -54,13 +54,15 @@ const SYMBOLS = {
 	},
 } as const;
 
+const LOCAL = Deno.env.get("LOCAL");
+
 const { symbols } = await dlopen(
 	{
 		name: "deno_bcrypt",
-		url: Deno.env.get("LOCAL")
+		url: LOCAL
 			? getLocalUrl()
 			: `https://github.com/felix-schindler/deno-bcrypt/releases/download/v${VERSION}/`,
-		cache: "use",
+		cache: LOCAL ? "reloadAll" : "use",
 	},
 	SYMBOLS,
 );
