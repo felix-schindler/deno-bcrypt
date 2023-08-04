@@ -52,7 +52,3 @@ const hashed = await hash(password);
 const isMatch = await verify(password, hashed);
 console.log(hashed, isMatch);
 ```
-
-## Examples
-
-In the [`example`](./example.ts) you can find some usage examples.
