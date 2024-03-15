@@ -1,4 +1,4 @@
-import { dlopen } from "https://deno.land/x/plug@1.0.2/mod.ts";
+import { dlopen } from "@denosaurs/plug";
 
 export const VERSION = "0.1.0";
 
