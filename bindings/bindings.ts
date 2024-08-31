@@ -1,6 +1,6 @@
 import { dlopen } from "@denosaurs/plug";
 
-export const VERSION = "0.1.0";
+export const VERSION = "1.0.0";
 
 // Auto-generated with deno_bindgen
 function encode(v: string | Uint8Array): Uint8Array {
@@ -70,7 +70,7 @@ const { symbols } = await dlopen(
 export function hash(a0: string) {
 	const a0_buf = encode(a0);
 
-	const rawResult = symbols.hash(a0_buf, a0_buf.byteLength);
+	const rawResult = symbols.hash(a0_buf, BigInt(a0_buf.byteLength));
 	const result = rawResult.then(readPointer);
 	return result.then(decode);
 }
@@ -80,9 +80,9 @@ export function verify(a0: string, a1: string) {
 
 	const rawResult = symbols.verify(
 		a0_buf,
-		a0_buf.byteLength,
+		BigInt(a0_buf.byteLength),
 		a1_buf,
-		a1_buf.byteLength,
+		BigInt(a1_buf.byteLength),
 	);
 	const result = rawResult;
 	return result;

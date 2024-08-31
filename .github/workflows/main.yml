@@ -79,6 +79,10 @@ jobs:
             target/release/libdeno_bcrypt.so
             target/release/deno_bcrypt.dll
 
+      - name: Publish to JSR
+        if: matrix.kind == 'test' && startsWith(github.ref, 'refs/tags/')
+        run: npx jsr publish
+
       - name: After Release Test
         if: matrix.kind == 'test' && startsWith(github.ref, 'refs/tags/')
-        run: deno test -A --unstable
+        run: deno test -A --unstable-ffi
