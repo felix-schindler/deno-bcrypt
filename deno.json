@@ -1,6 +1,6 @@
 {
 	"name": "@felix/bcrypt",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"exports": "./mod.ts",
 	"tasks": {
 		"samples": "deno run -A ./examples/",
