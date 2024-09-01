@@ -11,27 +11,29 @@ Benchmark measures performance against [x/bcrypt](https://deno.land/x/bcrypt).
 See [`benchmarks`](./src/all.bench.ts) for more details.
 
 ```
-cpu: Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz
-runtime: deno 1.36.0 (x86_64-apple-darwin)
+cpu: Apple M2 Pro
+runtime: deno 1.45.5 (aarch64-apple-darwin)
 
 file://[redacted]/deno-bcrypt/all.bench.ts
 benchmark       time (avg)        iter/s             (min … max)       p75       p99      p995
 ---------------------------------------------------------------- -----------------------------
 
-
-bcrypt ffi     214.44 ms/iter           4.7  (210.27 ms … 223.3 ms) 220.28 ms  223.3 ms  223.3 ms
-bcrypt          91.36 ms/iter          10.9  (88.61 ms … 113.89 ms)  89.94 ms 113.89 ms 113.89 ms
-
-summary
-  bcrypt ffi
-   2.35x slower than bcrypt
-
-bcrypt ffi      55.32 ms/iter          18.1   (53.52 ms … 59.28 ms)  56.47 ms  59.28 ms  59.28 ms
-bcrypt           90.1 ms/iter          11.1    (87.63 ms … 96.2 ms)  90.75 ms   96.2 ms   96.2 ms
+group hashing
+bcrypt ffi     212.93 ms/iter           4.7 (211.94 ms … 215.54 ms) 213.17 ms 215.54 ms 215.54 ms
+Check https://deno.land/x/bcrypt@v0.4.1/src/worker.ts
+bcrypt          75.56 ms/iter          13.2   (75.18 ms … 75.98 ms) 75.77 ms 75.98 ms 75.98 ms
 
 summary
   bcrypt ffi
-   1.63x faster than bcrypt
+   2.81x slower than bcrypt
+
+group verifying
+bcrypt ffi      53.19 ms/iter          18.8   (53.02 ms … 53.58 ms) 53.23 ms 53.58 ms 53.58 ms
+bcrypt          75.78 ms/iter          13.2    (75.2 ms … 76.96 ms) 75.73 ms 76.96 ms 76.96 ms
+
+summary
+  bcrypt ffi
+   1.43x faster than bcrypt
 ```
 
 ## API

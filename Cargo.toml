@@ -1,6 +1,6 @@
 [package]
 name = "deno-bcrypt"
-version = "1.0.2"
+version = "1.0.3"
 authors = ["Felix <webmaster@schindlerfelix.de>"]
 edition = "2018"
 
