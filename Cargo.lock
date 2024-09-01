@@ -84,7 +84,7 @@ dependencies = [
 
 [[package]]
 name = "deno-bcrypt"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
  "bcrypt",
  "deno_bindgen",

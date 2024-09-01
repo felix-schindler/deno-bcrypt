@@ -1,6 +1,6 @@
 import { dlopen } from "@denosaurs/plug";
 
-export const VERSION = "1.0.4";
+export const VERSION = "1.0.5";
 
 // Auto-generated with deno_bindgen
 function encode(v: string | Uint8Array): Uint8Array {
