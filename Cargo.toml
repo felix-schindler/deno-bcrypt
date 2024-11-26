@@ -9,6 +9,6 @@ path = "lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-bcrypt = "0.15"
+bcrypt = "0.16"
 deno_bindgen = "0.8.1"
 serde = { version = "1", features = ["derive"] }
