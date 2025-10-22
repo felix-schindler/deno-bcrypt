@@ -3,9 +3,8 @@ import { dlopen } from "@denosaurs/plug";
 export const VERSION = "1.0.5";
 
 // Auto-generated with deno_bindgen
-function encode(v: string | Uint8Array): Uint8Array {
-	if (typeof v !== "string") return v;
-	return new TextEncoder().encode(v);
+function encode(v: string): ArrayBuffer {
+	return new TextEncoder().encode(v).buffer;
 }
 
 function decode(v: Uint8Array): string {
@@ -67,14 +66,14 @@ const { symbols } = await dlopen(
 	SYMBOLS,
 );
 
-export function hash(a0: string) {
+export function hash(a0: string): Promise<string> {
 	const a0_buf = encode(a0);
 
 	const rawResult = symbols.hash(a0_buf, BigInt(a0_buf.byteLength));
 	const result = rawResult.then(readPointer);
 	return result.then(decode);
 }
-export function verify(a0: string, a1: string) {
+export function verify(a0: string, a1: string): Promise<number> {
 	const a0_buf = encode(a0);
 	const a1_buf = encode(a1);
 
