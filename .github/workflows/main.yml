@@ -79,8 +79,8 @@ jobs:
             Linux)   ext=so;   prefix=lib;;
             macOS)   ext=dylib; prefix=lib;;
           esac
-          mv target/release/${prefix}deno_argon2.${ext} \
-          target/release/${prefix}deno_argon2-${{ runner.arch }}.${ext}
+          mv target/release/${prefix}deno_bcrypt.${ext} \
+          target/release/${prefix}deno_bcrypt-${{ runner.arch }}.${ext}
 
       - name: Lint TypeScript
         if: matrix.kind == 'lint' && matrix.os == 'ubuntu-latest'
