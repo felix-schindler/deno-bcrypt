@@ -18,7 +18,7 @@
 		]
 	},
 	"imports": {
-		"@denosaurs/plug": "jsr:@denosaurs/plug@^1.0.6",
+		"@denosaurs/plug": "jsr:@denosaurs/plug@^1.1.0",
 		"@std/assert": "jsr:@std/assert@^1.0.3",
 		"bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts"
 	},
