@@ -12,7 +12,13 @@ jobs:
       id-token: write # The OIDC ID token is used for authentication with JSR.
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [
+          macos-latest,
+          macos-15-intel,
+          windows-latest,
+          ubuntu-latest,
+          ubuntu-24.04-arm,
+        ]
         kind: ["test", "lint"]
 
     steps:
@@ -20,16 +26,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install rust with rustfmt and clippy
-        uses: actions-rs/toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          profile: minimal
           toolchain: stable
           components: rustfmt, clippy
 
       - name: Install Deno
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
+          deno-version: v2.x
 
       - name: Log versions
         run: |
@@ -63,13 +68,23 @@ jobs:
         if: matrix.kind == 'test'
         run: cargo build --release --locked
 
-      - name: Lint TypeScript
-        if: matrix.kind == 'lint' && matrix.os == 'ubuntu-latest'
-        run: deno task ok
-
       - name: Test TypeScript
         if: matrix.kind == 'test'
         run: deno task test
+
+      - name: Rename artifacts for uniqueness
+        if: matrix.kind == 'test' && startsWith(github.ref, 'refs/tags/') && matrix.os != 'windows-latest'
+        run: |
+          case "${{ runner.os }}" in
+            Linux)   ext=so;   prefix=lib;;
+            macOS)   ext=dylib; prefix=lib;;
+          esac
+          mv target/release/${prefix}deno_argon2.${ext} \
+          target/release/${prefix}deno_argon2-${{ runner.arch }}.${ext}
+
+      - name: Lint TypeScript
+        if: matrix.kind == 'lint' && matrix.os == 'ubuntu-latest'
+        run: deno task ok
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -78,14 +93,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_REPO_TOKEN }}
         with:
           files: |
-            target/release/libdeno_bcrypt.dylib
-            target/release/libdeno_bcrypt.so
-            target/release/deno_bcrypt.dll
+            target/${{ matrix.target }}/release/libdeno_bcrypt-${{ runner.arch }}.dylib
+            target/${{ matrix.target }}/release/libdeno_bcrypt-${{ runner.arch }}.so
+            target/${{ matrix.target }}/release/deno_bcrypt.dll
 
       - name: Publish to JSR
-        if: matrix.kind == 'test' && startsWith(github.ref, 'refs/tags/')
-        run: npx jsr publish --allow-dirty
+        if: matrix.kind == 'test' && startsWith(github.ref, 'refs/tags/') && matrix.os == 'ubuntu-latest'
+        run: deno publish
 
       - name: After Release Test
         if: matrix.kind == 'test' && startsWith(github.ref, 'refs/tags/')
-        run: deno test -A --unstable-ffi
+        run: deno test -A

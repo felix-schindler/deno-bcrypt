@@ -1,4 +1,4 @@
-import { dlopen } from "@denosaurs/plug";
+import { dlopen, type FetchOptions } from "@denosaurs/plug";
 
 export const VERSION = "1.0.5";
 
@@ -40,6 +40,33 @@ function getLocalUrl(): string {
 	return uri;
 }
 
+/**
+ * Returns a short architecture name based on the current Deno build architecture.
+ */
+function archShort(): string {
+	switch (Deno.build.arch) {
+		case "aarch64":
+			return "ARM64";
+		case "x86_64":
+			return "X64";
+	}
+}
+
+const LOCAL = Deno.env.get("LOCAL");
+
+/**
+ * Configuration options for fetching the Argon2 module, determining whether to fetch from a local source or a remote URL.
+ */
+const FETCH_OPTIONS: FetchOptions = {
+	name: LOCAL || Deno.build.os === "windows"
+		? "deno_bcrypt"
+		: "deno_bcrypt-" + archShort(),
+	url: LOCAL
+		? getLocalUrl()
+		: `https://github.com/felix-schindler/deno-bcrypt/releases/download/v${VERSION}/`,
+	cache: LOCAL ? "reloadAll" : "use",
+};
+
 const SYMBOLS = {
 	hash: {
 		parameters: ["buffer", "usize"],
@@ -53,16 +80,8 @@ const SYMBOLS = {
 	},
 } as const;
 
-const LOCAL = Deno.env.get("LOCAL");
-
 const { symbols } = await dlopen(
-	{
-		name: "deno_bcrypt",
-		url: LOCAL
-			? getLocalUrl()
-			: `https://github.com/felix-schindler/deno-bcrypt/releases/download/v${VERSION}/`,
-		cache: LOCAL ? "reloadAll" : "use",
-	},
+	FETCH_OPTIONS,
 	SYMBOLS,
 );
 
