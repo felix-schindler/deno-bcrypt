@@ -1,6 +1,6 @@
 import { dlopen, type FetchOptions } from "@denosaurs/plug";
 
-export const VERSION = "1.0.8";
+export const VERSION = "2.0.0";
 
 // Auto-generated with deno_bindgen
 function encode(v: string): ArrayBuffer {
