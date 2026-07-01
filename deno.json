@@ -25,8 +25,7 @@
 			"README.md",
 			"bindings/**/*.ts",
 			"helper.ts",
-			"mod.ts",
-			"./bindings.json"
+			"mod.ts"
 		]
 	}
 }

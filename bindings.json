@@ -1,1 +1,0 @@
-{"name":"deno_bcrypt","littleEndian":true,"symbols":{"verify":{"parameters":["str","str"],"result":"i8","nonBlocking":true},"hash":{"parameters":["str"],"result":"str","nonBlocking":true}},"typeDefs":{},"tsTypes":{}}
