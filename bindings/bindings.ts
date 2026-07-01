@@ -58,9 +58,7 @@ const LOCAL = Deno.env.get("LOCAL");
  * Configuration options for fetching the Argon2 module, determining whether to fetch from a local source or a remote URL.
  */
 const FETCH_OPTIONS: FetchOptions = {
-	name: LOCAL || Deno.build.os === "windows"
-		? "deno_bcrypt"
-		: "deno_bcrypt-" + archShort(),
+	name: LOCAL ? "deno_bcrypt" : "deno_bcrypt-" + archShort(),
 	url: LOCAL
 		? getLocalUrl()
 		: `https://github.com/felix-schindler/deno-bcrypt/releases/download/v${VERSION}/`,
