@@ -1,13 +1,13 @@
 {
 	"$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
 	"name": "@felix/bcrypt",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"exports": "./mod.ts",
+	"nodeModulesDir": "auto",
 	"tasks": {
-		"samples": "deno run -A ./examples/",
 		"ok": "deno fmt --check && deno lint && deno check **/*.ts",
 		"test": "LOCAL=true deno test --allow-ffi --allow-env --allow-write --allow-read",
-		"bench": "LOCAL=true deno bench --allow-ffi --allow-env --allow-write --allow-read --allow-net=deno.land",
+		"bench": "LOCAL=true deno bench --allow-ffi --allow-env --allow-write --allow-read",
 		"build": "deno run -A https://deno.land/x/deno_bindgen/cli.ts --release"
 	},
 	"fmt": {
@@ -17,15 +17,10 @@
 	"imports": {
 		"@denosaurs/plug": "jsr:@denosaurs/plug@^1.1.0",
 		"@std/assert": "jsr:@std/assert@^1.0.19",
-		"bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts"
+		"bcrypt_x": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
+		"bcryptjs": "npm:bcryptjs@^3.0.3"
 	},
 	"publish": {
-		"include": [
-			"LICENSE",
-			"README.md",
-			"bindings/**/*.ts",
-			"helper.ts",
-			"mod.ts"
-		]
+		"include": ["LICENSE", "README.md", "bindings/**/*.ts", "mod.ts"]
 	}
 }

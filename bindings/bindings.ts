@@ -1,26 +1,9 @@
 import { dlopen, type FetchOptions } from "@denosaurs/plug";
 
-export const VERSION = "2.0.0";
+export const VERSION = "2.1.0";
 
-// Auto-generated with deno_bindgen
-function encode(v: string): ArrayBuffer {
-	return new TextEncoder().encode(v).buffer;
-}
-
-function decode(v: Uint8Array): string {
-	return new TextDecoder().decode(v);
-}
-
-// deno-lint-ignore no-explicit-any
-function readPointer(v: any): Uint8Array {
-	const ptr = new Deno.UnsafePointerView(v);
-	const lengthBe = new Uint8Array(4);
-	const view = new DataView(lengthBe.buffer);
-	ptr.copyInto(lengthBe, 0);
-	const buf = new Uint8Array(view.getUint32(0));
-	ptr.copyInto(buf, 4);
-	return buf;
-}
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
 
 function getLocalUrl(): string {
 	const url = new URL("../target/release", import.meta.url);
@@ -67,39 +50,55 @@ const FETCH_OPTIONS: FetchOptions = {
 
 const SYMBOLS = {
 	hash: {
-		parameters: ["buffer", "usize"],
-		result: "buffer",
+		parameters: ["buffer", "usize", "u32"] as const,
+		result: "buffer" as const,
 		nonblocking: true,
 	},
 	verify: {
-		parameters: ["buffer", "usize", "buffer", "usize"],
-		result: "i8",
+		parameters: ["buffer", "usize", "buffer", "usize"] as const,
+		result: "i8" as const,
 		nonblocking: true,
 	},
-} as const;
+	free_hash: {
+		parameters: ["pointer"] as const,
+		result: "void" as const,
+	},
+};
 
 const { symbols } = await dlopen(
 	FETCH_OPTIONS,
 	SYMBOLS,
 );
 
-export function hash(a0: string): Promise<string> {
-	const a0_buf = encode(a0);
-
-	const rawResult = symbols.hash(a0_buf, BigInt(a0_buf.byteLength));
-	const result = rawResult.then(readPointer);
-	return result.then(decode);
+export function hash(password: string, cost: number): Promise<string> {
+	const pwd = encoder.encode(password);
+	const raw = symbols.hash(
+		pwd.buffer,
+		BigInt(pwd.byteLength),
+		cost,
+	) as Promise<Deno.PointerValue>;
+	return raw.then((v) => {
+		const lenBuf = new Uint8Array(4);
+		const lenView = new DataView(lenBuf.buffer);
+		const ptr = new Deno.UnsafePointerView(v!);
+		ptr.copyInto(lenBuf, 0);
+		const out = new Uint8Array(lenView.getUint32(0));
+		ptr.copyInto(out, 4);
+		symbols.free_hash(v);
+		return decoder.decode(out);
+	});
 }
-export function verify(a0: string, a1: string): Promise<number> {
-	const a0_buf = encode(a0);
-	const a1_buf = encode(a1);
 
-	const rawResult = symbols.verify(
-		a0_buf,
-		BigInt(a0_buf.byteLength),
-		a1_buf,
-		BigInt(a1_buf.byteLength),
-	);
-	const result = rawResult;
-	return result;
+export function verify(
+	password: string,
+	hash: string,
+): Promise<number> {
+	const pwd = encoder.encode(password);
+	const h = encoder.encode(hash);
+	return symbols.verify(
+		pwd.buffer,
+		BigInt(pwd.byteLength),
+		h.buffer,
+		BigInt(h.byteLength),
+	) as Promise<number>;
 }

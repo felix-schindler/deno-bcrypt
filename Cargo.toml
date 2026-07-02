@@ -1,6 +1,6 @@
 [package]
 name = "deno-bcrypt"
-version = "2.0.0"
+version = "2.1.0"
 authors = ["Felix <webmaster@schindlerfelix.de>"]
 edition = "2018"
 
@@ -12,3 +12,7 @@ crate-type = ["cdylib"]
 bcrypt = "0.19.2"
 deno_bindgen = "0.8.1"
 serde = { version = "1", features = ["derive"] }
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
