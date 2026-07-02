@@ -1,3 +1,5 @@
+#![allow(clippy::not_unsafe_ptr_arg_deref)]
+
 extern crate bcrypt;
 
 use bcrypt::{hash as bcrypt_hash, verify as bcrypt_verify};
